@@ -15,10 +15,7 @@ const PORT = process.env.PORT || 3000;
 // MongoDB connection
 const dbUri = process.env.MONGO_URI;
 
-mongoose.connect(dbUri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+mongoose.connect(dbUri)
 .then(() => {
   console.log('✅ Connected to MongoDB');
   // Start server only after DB connection
