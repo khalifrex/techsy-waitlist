@@ -7,7 +7,7 @@ import mongoose from 'mongoose';
 
 const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const dbUri=process.env.MONGO_URI || 'mongodb+srv://khalifrex2:bdx02eUQgid9yGIk@twaitlist.2vgfeza.mongodb.net/techsyDb'
+const dbUri=process.env.MONGO_URI
 
 
 mongoose.connect(dbUri)
