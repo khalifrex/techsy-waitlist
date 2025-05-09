@@ -4,21 +4,34 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+
+dotenv.config(); // Load .env variables
 
 const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const dbUri=process.env.MONGO_URI
+const PORT = process.env.PORT || 3000;
 
+// MongoDB connection
+const dbUri = process.env.MONGO_URI;
 
-mongoose.connect(dbUri)
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.log('MongoDB connection error:', err));
+mongoose.connect(dbUri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => {
+  console.log('✅ Connected to MongoDB');
+  // Start server only after DB connection
+  app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+})
+.catch(err => console.error('❌ MongoDB connection error:', err));
 
- 
+// Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Email schema + model
 const emailSchema = new mongoose.Schema({
   email: {
     type: String,
@@ -31,6 +44,7 @@ const emailSchema = new mongoose.Schema({
 
 const Email = mongoose.model('Email', emailSchema);
 
+// API route
 app.post('/notify', async (req, res) => {
   const { email } = req.body;
 
@@ -43,15 +57,7 @@ app.post('/notify', async (req, res) => {
     await newEmail.save();
     res.json({ message: 'You’ll be notified when we launch!' });
   } catch (err) {
-    if (err.code === 11000) {
-      return res.json({ message: 'Email already exists.' });
-    }
-
-    console.error('Error saving email:', err);
-    res.json({ message: 'Server error. Please try again later.' });
+    console.error('❌ Error saving email:', err);
+    res.json({ message: 'Error saving email.' });
   }
 });
-
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
