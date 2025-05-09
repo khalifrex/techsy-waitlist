@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Techsy — Coming Soon</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1400&q=80') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      backdrop-filter: brightness(0.6);
+    }
+
+    h2 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+
+    input, button {
+      padding: 12px;
+      font-size: 16px;
+      margin: 5px;
+      border: none;
+      border-radius: 5px;
+    }
+
+    input {
+      width: 300px;
+    }
+
+    button {
+      background: #0d6efd;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0051cc;
+    }
+  </style>
+</head>
+<body>
+  <h2>Techsy is Launching Soon</h2>
+  <p>Enter your email to get notified:</p>
+  <form id="notifyForm">
+    <input type="email" name="email" required placeholder="Your email">
+    <button type="submit">Notify Me</button>
+  </form>
+  <p id="message"></p>
+
+  <script>
+    document.getElementById('notifyForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const email = e.target.email.value;
+      const res = await fetch('/notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      const data = await res.json();
+      document.getElementById('message').innerText = data.message;
+    });
+  </script>
+</body>
+</html>
